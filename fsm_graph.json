@@ -1,0 +1,216 @@
+{
+  "states": [
+    {
+      "id": 1,
+      "x": 673,
+      "y": 207,
+      "label": "MENÚ",
+      "action": "Mostrar configuración\nMostrar opciones",
+      "startAction": "",
+      "radius": 70,
+      "isStart": true,
+      "isPseudostate": false
+    },
+    {
+      "id": 2,
+      "x": 903,
+      "y": 57,
+      "label": "Parámetro",
+      "action": "",
+      "startAction": "",
+      "radius": 60,
+      "isStart": false,
+      "isPseudostate": false
+    },
+    {
+      "id": 3,
+      "x": 890,
+      "y": 345,
+      "label": "Modo",
+      "action": "",
+      "startAction": "",
+      "radius": 60,
+      "isStart": false,
+      "isPseudostate": false
+    },
+    {
+      "id": 5,
+      "x": 1114,
+      "y": 199,
+      "label": "MEDIR",
+      "action": "",
+      "startAction": "",
+      "radius": 71,
+      "isStart": false,
+      "isPseudostate": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": 1,
+      "to": 2,
+      "label": "Botón 1",
+      "action": "",
+      "controlOffset": {
+        "x": -36,
+        "y": -38
+      },
+      "startAnchorAngle": -1.2649174553900444,
+      "endAnchorAngle": -2.964367268640074,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 1,
+      "to": 3,
+      "label": "Botón 2",
+      "action": "",
+      "controlOffset": {
+        "x": 18,
+        "y": -42
+      },
+      "startAnchorAngle": null,
+      "endAnchorAngle": -2.0840485996611577,
+      "labelOffset": {
+        "x": 4,
+        "y": -39
+      }
+    },
+    {
+      "from": 3,
+      "to": 5,
+      "label": "Pulsador",
+      "action": "",
+      "controlOffset": {
+        "x": 36,
+        "y": 20
+      },
+      "startAnchorAngle": -0.18109265653121864,
+      "endAnchorAngle": 2.2985660627148707,
+      "labelOffset": {
+        "x": 6,
+        "y": 16
+      }
+    },
+    {
+      "from": 2,
+      "to": 5,
+      "label": "Pulsador",
+      "action": "",
+      "controlOffset": {
+        "x": 12,
+        "y": -38
+      },
+      "startAnchorAngle": 0.15137544373402623,
+      "endAnchorAngle": -2.039370004324126,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 5,
+      "to": 1,
+      "label": "Pulsador",
+      "action": "",
+      "controlOffset": {
+        "x": 6,
+        "y": -434
+      },
+      "startAnchorAngle": -1.2269905257047395,
+      "endAnchorAngle": -1.8018869939907938,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 3,
+      "to": 1,
+      "label": "Botón 2",
+      "action": "M = 2",
+      "controlOffset": {
+        "x": 4,
+        "y": 38
+      },
+      "startAnchorAngle": 3.0738996308958244,
+      "endAnchorAngle": 1.2178059389679863,
+      "labelOffset": {
+        "x": -8,
+        "y": 42
+      }
+    },
+    {
+      "from": 1,
+      "to": 5,
+      "label": "Pulsador",
+      "action": "",
+      "controlOffset": {
+        "x": 0,
+        "y": 436
+      },
+      "startAnchorAngle": 1.8882550620495278,
+      "endAnchorAngle": 1.3258176636680326,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 2,
+      "to": 1,
+      "label": "Botón 1",
+      "action": "P = 1",
+      "controlOffset": {
+        "x": 12,
+        "y": 24
+      },
+      "startAnchorAngle": 1.9208412150400427,
+      "endAnchorAngle": -0.19999295660618124,
+      "labelOffset": {
+        "x": 19,
+        "y": 36
+      }
+    },
+    {
+      "from": 2,
+      "to": 1,
+      "label": "Botón 2",
+      "action": "P = 2",
+      "controlOffset": {
+        "x": 20,
+        "y": -18
+      },
+      "startAnchorAngle": 2.655560724249697,
+      "endAnchorAngle": -0.7949216849910611,
+      "labelOffset": {
+        "x": 23,
+        "y": 42
+      }
+    },
+    {
+      "from": 3,
+      "to": 1,
+      "label": "Botón 1",
+      "action": "M = 1",
+      "controlOffset": {
+        "x": -8,
+        "y": 4
+      },
+      "startAnchorAngle": null,
+      "endAnchorAngle": 0.8453263185186561,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "stateIdCounter": 6,
+  "isDarkTheme": true,
+  "simContext": {
+    "P": 2,
+    "M": 2
+  }
+}
