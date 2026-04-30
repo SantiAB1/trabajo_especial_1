@@ -8,6 +8,7 @@
 #ifndef INC_MENU_H_
 #define INC_MENU_H_
 
+#include <stdint.h>
 
 typedef enum{
 	MENU_S,
