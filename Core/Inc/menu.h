@@ -29,7 +29,6 @@ typedef enum{
 	BOTON_1,
 	BOTON_2,
 	PULSADOR,
-	MEDIR
 } evento;
 
 typedef struct{

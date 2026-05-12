@@ -43,7 +43,7 @@
 ADC_HandleTypeDef hadc1;
 
 UART_HandleTypeDef huart2;
-
+medicion medidor;
 /* USER CODE BEGIN PV */
 
 uint8_t rx_byte;
@@ -100,9 +100,8 @@ int main(void)
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
 
-  medicion medidor;
   menu_init(&medidor, 1, 1, &huart2);
-  //HAL_UART_Receive_IT(&huart2, &rx_byte, 1);
+  HAL_UART_Receive_IT(&huart2, &rx_byte, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -313,15 +312,13 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-	if (huart->Instance == USART2) {
-		char *ack = "Se recibio algo\r\n";
-		HAL_UART_Transmit(&huart2, (uint8_t *)ack, strlen(ack), HAL_MAX_DELAY);
-		if (rx_byte == 't') {
-			// Togglear LED en PC13
-	        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
-		}
-		HAL_UART_Receive_IT(&huart2, &rx_byte, 1);
+	if (rx_byte == '1') {
+		menu_procesarEvento(&medidor, BOTON_1, huart, &hadc1);
+	} else if(rx_byte == '2'){
+		menu_procesarEvento(&medidor, BOTON_2, huart, &hadc1);
 	}
+	//Volver a activar interrupciones por UART
+	HAL_UART_Receive_IT(&huart2, &rx_byte, 1);
 }
 /* USER CODE END 4 */
 
