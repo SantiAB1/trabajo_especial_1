@@ -1,2 +1,6 @@
-../Core/Src/menu.c:4:6:init	1
-../Core/Src/menu.c:11:6:procesarEvento	2
+../Core/Src/menu.c:10:6:menu_init	1
+../Core/Src/menu.c:22:6:menu_procesarEvento	10
+../Core/Src/menu.c:73:13:mostrar_menu	1
+../Core/Src/menu.c:78:13:setHighZ	1
+../Core/Src/menu.c:95:13:enableRange	1
+../Core/Src/menu.c:110:17:readADC	1
