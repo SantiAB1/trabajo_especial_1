@@ -41,5 +41,5 @@ typedef struct{
 
 void menu_init(medicion *medidor, uint32_t Pinicial, uint32_t Minicial, UART_HandleTypeDef * huart);
 void menu_procesarEvento(medicion *medidor, evento, UART_HandleTypeDef * huart, ADC_HandleTypeDef * hadc);
-
+uint32_t AutoRango(ADC_HandleTypeDef * hadc);
 #endif /* INC_MENU_H_ */

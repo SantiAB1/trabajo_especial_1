@@ -111,10 +111,7 @@ void menu_procesarEvento(medicion *medidor, evento event, UART_HandleTypeDef * h
 						medidor->estado = MENU_S;
 						mostrar_menu(huart);
 					break;
-					case TIMER_PERIODICA:
-						medidor->estado = MENU_S;
-						mostrar_menu(huart);
-					break;
+
 			default: break;
 				}
 			break;
@@ -133,21 +130,11 @@ static void medir_R(medicion *medidor, UART_HandleTypeDef *huart, ADC_HandleType
 	char *msgMEDIR = "Midiendo...\r\n";
 	HAL_UART_Transmit(huart, (uint8_t*) msgMEDIR, strlen(msgMEDIR), HAL_MAX_DELAY);
 	//elegir el rango
-	setHighZ();
-	enableRange(GPIOR_PORT, GPIO330);
-	valorADC = readADC(hadc);
-	if(valorADC<=3891.2){	//0.95*4095
-		medidor->valor = (float) valorADC;
-	}else {
-		enableRange(GPIOR_PORT, GPIO10K);
-		valorADC = readADC(hadc);
-
-	}
-
+	uint32_t R2 = AutoRango(hadc);
 	//Convertir el valor del ADC a resitsencia
-
+	medidor->valor = (float) valorADC;
 	medidor->valor *= 3.3 / 4096;
-	medidor->valor = (medidor->valor * 1000)/(3.3 - medidor->valor);
+	medidor->valor = (medidor->valor * R2)/(3.3 - medidor->valor);
 	//devolver el valor medido
 	char tx_buffer[64];
 	sprintf(tx_buffer, "Valor medido: %.2f\n\n", medidor->valor);
@@ -185,6 +172,31 @@ static void enableRange(GPIO_TypeDef* port, uint16_t pin)	//Rango
     HAL_GPIO_Init(port, &GPIO_InitStruct);
 
     HAL_GPIO_WritePin(port, pin, GPIO_PIN_SET);
+}
+
+uint32_t AutoRango(ADC_HandleTypeDef * hadc){
+setHighZ();
+enableRange(GPIOR_PORT, GPIO330R);
+uint32_t valorADC = readADC(hadc);
+if(valorADC<=3891.2){	//0.95*4095
+	return 330;
+
+}else if(valorADC>3891.2){
+	setHighZ();
+	enableRange(GPIOR_PORT, GPIO10K);
+	valorADC = readADC(hadc);
+	if(valorADC<=3891.2){	//0.95*4095
+		return 10000;
+	}else if(valorADC>3891.2){
+			setHighZ();
+			enableRange(GPIOR_PORT, GPIO1M);
+			valorADC = readADC(hadc);
+			if(valorADC<=3891.2){	//0.95*4095
+				return 1000000;
+				}
+	}
+}
+
 }
 
 static uint16_t readADC(ADC_HandleTypeDef * hadc){ // medir con el adc
