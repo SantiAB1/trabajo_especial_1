@@ -1,13 +1,14 @@
 #include "menu.h"
 
-uint16_t valorADC;
 char confParametro[15];
 char confModo[15];
 //--------------------------------FUNCIONES---------------------------------
 static void medir_R(medicion *medidor, UART_HandleTypeDef *huart, ADC_HandleTypeDef *hadc);
+static void medir_C(medicion *medidor, UART_HandleTypeDef *huart, ADC_HandleTypeDef *hadc);
 static void mostrar_menu(UART_HandleTypeDef * huart);						//Printear el menu en la terminal
 static void setHighZ();														//Poner todas los pines de salida para medición en alta impedancia.
 static void enableRange(GPIO_TypeDef* port, uint16_t pin);					//Elrjir el rango de resistencia
+static uint32_t AutoRango(ADC_HandleTypeDef * hadc, uint16_t *valorADC);
 static uint16_t readADC(ADC_HandleTypeDef * hadc);							//Tomar muestra del ADC
 
 //Configurar el menu, parametro y modo m y p sobran??
@@ -25,7 +26,7 @@ void menu_init(medicion *medidor, uint32_t Pinicial, uint32_t Minicial, UART_Han
 	mostrar_menu(huart);
 }
 
-void menu_procesarEvento(medicion *medidor, evento event, UART_HandleTypeDef * huart, ADC_HandleTypeDef * hadc){
+void menu_procesarEvento(medicion *medidor, evento event, UART_HandleTypeDef * huart, ADC_HandleTypeDef * hadc, TIM_HandleTypeDef * htim){
 
 	switch(medidor->estado){
 
@@ -47,9 +48,16 @@ void menu_procesarEvento(medicion *medidor, evento event, UART_HandleTypeDef * h
 				break;
 
 				case PULSADOR:   // Y pulsador para empezar a medir
-
-					medidor->estado = MEDIR_S;
-					medir_R(medidor, huart, hadc);
+					if(medidor->M == 2){
+						HAL_TIM_Base_Start_IT(htim);
+					}
+					if(medidor->P == 1){
+						medir_R(medidor, huart, hadc);
+						medidor->estado = MEDIR_R;
+					} else{
+						medir_C(medidor, huart, hadc);
+						medidor->estado = MEDIR_C;
+					}
 				break;
 
 				default: break;
@@ -62,19 +70,29 @@ void menu_procesarEvento(medicion *medidor, evento event, UART_HandleTypeDef * h
 
 				case BOTON_1:
 					medidor->estado = MENU_S;
+					medidor->P = 1;
 					sprintf(confParametro,"RESISTENCIA");
 					mostrar_menu(huart);
 				break;
 
 				case BOTON_2:
 					medidor->estado = MENU_S;
+					medidor->P = 2;
 					sprintf(confParametro,"CAPACITANCIA");
 					mostrar_menu(huart);
 				break;
 
 				case PULSADOR:	// Pulsador para empezar a medir
-					medidor->estado = MEDIR_S;
-					medir_R(medidor, huart, hadc);
+					if(medidor->M == 2){
+						HAL_TIM_Base_Start_IT(htim);
+					}
+					if(medidor->P == 1){
+						medir_R(medidor, huart, hadc);
+						medidor->estado = MEDIR_R;
+					} else{
+						medir_C(medidor, huart, hadc);
+						medidor->estado = MEDIR_C;
+					}
 				break;
 
 				default: break;
@@ -86,33 +104,64 @@ void menu_procesarEvento(medicion *medidor, evento event, UART_HandleTypeDef * h
 				switch(event){
 					case BOTON_1:
 						medidor->estado = MENU_S;
+						medidor->M = 1;
 						sprintf(confModo,"UNICA");
 						mostrar_menu(huart);
 					break;
 
 					case BOTON_2:
 						medidor->estado = MENU_S;
+						medidor->M = 2;
 						sprintf(confModo,"PERIODICA");
 						mostrar_menu(huart);
 					break;
 
 					case PULSADOR:
-					medidor->estado = MEDIR_S;
-					medir_R(medidor, huart, hadc);
+						if(medidor->M == 2){
+							HAL_TIM_Base_Start_IT(htim);
+						}
+						if(medidor->P == 1){
+							medir_R(medidor, huart, hadc);
+							medidor->estado = MEDIR_R;
+						} else{
+							medir_C(medidor, huart, hadc);
+							medidor->estado = MEDIR_C;
+						}
 					break;
 
 					default: break;
 				}
 			break;
 
-			case MEDIR_S:		//Si se apreto el pulsador Medir por que tiene un switch si es un solo caso?
+			case MEDIR_R:
 				switch(event){
-					case PULSADOR:
-						medidor->estado = MENU_S;
-						mostrar_menu(huart);
+					case TIMER:
+						medir_R(medidor, huart, hadc);
 					break;
 
-			default: break;
+					case PULSADOR:
+						medidor->estado = MENU_S;
+						if(medidor->M == 2){
+							HAL_TIM_Base_Stop_IT(htim);
+						}
+						mostrar_menu(huart);
+					break;
+					default: break;
+				}
+
+			case MEDIR_C:
+				switch(event){
+					case TIMER:
+						medir_C(medidor, huart, hadc);
+					break;
+
+					case PULSADOR:
+						medidor->estado = MENU_S;
+						if(medidor->M == 2){
+							HAL_TIM_Base_Stop_IT(htim);
+						}
+						mostrar_menu(huart);
+					default: break;
 				}
 			break;
 	}
@@ -130,8 +179,18 @@ static void medir_R(medicion *medidor, UART_HandleTypeDef *huart, ADC_HandleType
 	char *msgMEDIR = "Midiendo...\r\n";
 	HAL_UART_Transmit(huart, (uint8_t*) msgMEDIR, strlen(msgMEDIR), HAL_MAX_DELAY);
 	//elegir el rango
-	uint32_t R2 = AutoRango(hadc);
-	//Convertir el valor del ADC a resitsencia
+
+	uint16_t valorADC;
+	uint32_t R2 = AutoRango(hadc, &valorADC);
+
+	//Check de fuera de escala
+	if(R2 == 0){
+		char *msgEscala = "FUERA DE ESCALA\r\n\n";
+		HAL_UART_Transmit(huart, (uint8_t*) msgEscala, strlen(msgEscala), HAL_MAX_DELAY);
+		return;
+	}
+
+	//Convertir el valor del ADC a resistencia
 	medidor->valor = (float) valorADC;
 	medidor->valor *= 3.3 / 4096;
 	medidor->valor = (medidor->valor * R2)/(3.3 - medidor->valor);
@@ -139,10 +198,15 @@ static void medir_R(medicion *medidor, UART_HandleTypeDef *huart, ADC_HandleType
 	char tx_buffer[64];
 	sprintf(tx_buffer, "Valor medido: %.2f\n\n", medidor->valor);
 	HAL_UART_Transmit(huart, (uint8_t*) tx_buffer , strlen(tx_buffer), HAL_MAX_DELAY);
-
 }
 
-static void setHighZ(){			//Configurar los GPIO en alta impedancia, con el auto-rango se elije que pin poner como salida en alto
+static void medir_C(medicion *medidor, UART_HandleTypeDef *huart, ADC_HandleTypeDef *hadc){
+	char *msgPlaceHolder = "place holder para medicion de capacidad";
+	HAL_UART_Transmit(huart, (uint8_t *) msgPlaceHolder, strlen(msgPlaceHolder), HAL_MAX_DELAY);
+	return;
+}
+
+static void setHighZ(){			//Configurar los GPIO en alta impedancia, con el auto-rango se elige que pin poner como salida en alto
 	GPIO_InitTypeDef GPIO_InitStruct;
 
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -174,29 +238,24 @@ static void enableRange(GPIO_TypeDef* port, uint16_t pin)	//Rango
     HAL_GPIO_WritePin(port, pin, GPIO_PIN_SET);
 }
 
-uint32_t AutoRango(ADC_HandleTypeDef * hadc){
-setHighZ();
-enableRange(GPIOR_PORT, GPIO330R);
-uint32_t valorADC = readADC(hadc);
-if(valorADC<=3891.2){	//0.95*4095
-	return 330;
+uint32_t AutoRango(ADC_HandleTypeDef * hadc, uint16_t *valorADC){
 
-}else if(valorADC>3891.2){
 	setHighZ();
 	enableRange(GPIOR_PORT, GPIO10K);
-	valorADC = readADC(hadc);
-	if(valorADC<=3891.2){	//0.95*4095
+	*valorADC = readADC(hadc);
+	if(*valorADC<=3891){	//0.95*4095
 		return 10000;
-	}else if(valorADC>3891.2){
-			setHighZ();
-			enableRange(GPIOR_PORT, GPIO1M);
-			valorADC = readADC(hadc);
-			if(valorADC<=3891.2){	//0.95*4095
-				return 1000000;
-				}
 	}
-}
 
+	setHighZ();
+	enableRange(GPIOR_PORT, GPIO1M);
+	*valorADC = readADC(hadc);
+	if(*valorADC<=3891){	//0.95*4095
+		return 1000000;
+	}
+
+	//Error de fuera de escala:
+	return 0;
 }
 
 static uint16_t readADC(ADC_HandleTypeDef * hadc){ // medir con el adc

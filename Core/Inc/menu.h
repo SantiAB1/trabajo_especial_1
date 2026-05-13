@@ -22,13 +22,15 @@ typedef enum{
 	MENU_S,
 	PARAMETRO_S,
 	MODO_S,
-	MEDIR_S
+	MEDIR_R,
+	MEDIR_C
 } estado;
 
 typedef enum{
 	BOTON_1,
 	BOTON_2,
 	PULSADOR,
+	TIMER
 } evento;
 
 typedef struct{
@@ -40,6 +42,5 @@ typedef struct{
 
 
 void menu_init(medicion *medidor, uint32_t Pinicial, uint32_t Minicial, UART_HandleTypeDef * huart);
-void menu_procesarEvento(medicion *medidor, evento, UART_HandleTypeDef * huart, ADC_HandleTypeDef * hadc);
-uint32_t AutoRango(ADC_HandleTypeDef * hadc);
+void menu_procesarEvento(medicion *medidor, evento, UART_HandleTypeDef * huart, ADC_HandleTypeDef * hadc, TIM_HandleTypeDef * htim);
 #endif /* INC_MENU_H_ */

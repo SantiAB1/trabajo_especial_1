@@ -1,8 +1,9 @@
-../Core/Src/menu.c:14:6:menu_init	1
-../Core/Src/menu.c:28:6:menu_procesarEvento	18
-../Core/Src/menu.c:121:13:mostrar_menu	1
-../Core/Src/menu.c:129:13:medir_R	1
-../Core/Src/menu.c:145:13:setHighZ	1
-../Core/Src/menu.c:162:13:enableRange	1
-../Core/Src/menu.c:177:10:AutoRango	6
-../Core/Src/menu.c:202:17:readADC	1
+../Core/Src/menu.c:15:6:menu_init	1
+../Core/Src/menu.c:29:6:menu_procesarEvento	30
+../Core/Src/menu.c:170:13:mostrar_menu	1
+../Core/Src/menu.c:178:13:medir_R	2
+../Core/Src/menu.c:203:13:medir_C	1
+../Core/Src/menu.c:209:13:setHighZ	1
+../Core/Src/menu.c:226:13:enableRange	1
+../Core/Src/menu.c:241:10:AutoRango	3
+../Core/Src/menu.c:261:17:readADC	1

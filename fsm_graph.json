@@ -2,8 +2,8 @@
   "states": [
     {
       "id": 1,
-      "x": 673,
-      "y": 207,
+      "x": 729,
+      "y": 188,
       "label": "MENÚ",
       "action": "Mostrar configuración\nMostrar opciones",
       "startAction": "",
@@ -13,8 +13,8 @@
     },
     {
       "id": 2,
-      "x": 903,
-      "y": 57,
+      "x": 482,
+      "y": 16,
       "label": "Parámetro",
       "action": "",
       "startAction": "",
@@ -24,8 +24,8 @@
     },
     {
       "id": 3,
-      "x": 890,
-      "y": 345,
+      "x": 458,
+      "y": 343,
       "label": "Modo",
       "action": "",
       "startAction": "",
@@ -34,13 +34,24 @@
       "isPseudostate": false
     },
     {
-      "id": 5,
-      "x": 1114,
-      "y": 199,
-      "label": "MEDIR",
-      "action": "",
+      "id": 6,
+      "x": 1003,
+      "y": 18,
+      "label": "Medir R",
+      "action": "if(M = 2){\niniciar timer}",
       "startAction": "",
-      "radius": 71,
+      "radius": 70,
+      "isStart": false,
+      "isPseudostate": false
+    },
+    {
+      "id": 7,
+      "x": 1007,
+      "y": 351,
+      "label": "Medir C",
+      "action": "if(M = 2){\niniciar timer}",
+      "startAction": "",
+      "radius": 70,
       "isStart": false,
       "isPseudostate": false
     }
@@ -55,8 +66,8 @@
         "x": -36,
         "y": -38
       },
-      "startAnchorAngle": -1.2649174553900444,
-      "endAnchorAngle": -2.964367268640074,
+      "startAnchorAngle": -1.8887446181461882,
+      "endAnchorAngle": 0.21336864215180798,
       "labelOffset": {
         "x": 0,
         "y": 0
@@ -69,61 +80,13 @@
       "action": "",
       "controlOffset": {
         "x": 18,
-        "y": -42
+        "y": -20
       },
-      "startAnchorAngle": null,
+      "startAnchorAngle": 2.649381386750227,
       "endAnchorAngle": -2.0840485996611577,
       "labelOffset": {
         "x": 4,
         "y": -39
-      }
-    },
-    {
-      "from": 3,
-      "to": 5,
-      "label": "Pulsador",
-      "action": "",
-      "controlOffset": {
-        "x": 36,
-        "y": 20
-      },
-      "startAnchorAngle": -0.18109265653121864,
-      "endAnchorAngle": 2.2985660627148707,
-      "labelOffset": {
-        "x": 6,
-        "y": 16
-      }
-    },
-    {
-      "from": 2,
-      "to": 5,
-      "label": "Pulsador",
-      "action": "",
-      "controlOffset": {
-        "x": 12,
-        "y": -38
-      },
-      "startAnchorAngle": 0.15137544373402623,
-      "endAnchorAngle": -2.039370004324126,
-      "labelOffset": {
-        "x": 0,
-        "y": 0
-      }
-    },
-    {
-      "from": 5,
-      "to": 1,
-      "label": "Pulsador",
-      "action": "",
-      "controlOffset": {
-        "x": 6,
-        "y": -434
-      },
-      "startAnchorAngle": -1.2269905257047395,
-      "endAnchorAngle": -1.8018869939907938,
-      "labelOffset": {
-        "x": 0,
-        "y": 0
       }
     },
     {
@@ -135,27 +98,11 @@
         "x": 4,
         "y": 38
       },
-      "startAnchorAngle": 3.0738996308958244,
-      "endAnchorAngle": 1.2178059389679863,
+      "startAnchorAngle": 0.24111767845146836,
+      "endAnchorAngle": 1.7454685258031364,
       "labelOffset": {
         "x": -8,
         "y": 42
-      }
-    },
-    {
-      "from": 1,
-      "to": 5,
-      "label": "Pulsador",
-      "action": "",
-      "controlOffset": {
-        "x": 0,
-        "y": 436
-      },
-      "startAnchorAngle": 1.8882550620495278,
-      "endAnchorAngle": 1.3258176636680326,
-      "labelOffset": {
-        "x": 0,
-        "y": 0
       }
     },
     {
@@ -167,11 +114,11 @@
         "x": 12,
         "y": 24
       },
-      "startAnchorAngle": 1.9208412150400427,
-      "endAnchorAngle": -0.19999295660618124,
+      "startAnchorAngle": 1.4310874525057329,
+      "endAnchorAngle": -2.8233756533910124,
       "labelOffset": {
-        "x": 19,
-        "y": 36
+        "x": 11,
+        "y": 3
       }
     },
     {
@@ -180,14 +127,14 @@
       "label": "Botón 2",
       "action": "P = 2",
       "controlOffset": {
-        "x": 20,
-        "y": -18
+        "x": -10,
+        "y": -16
       },
-      "startAnchorAngle": 2.655560724249697,
-      "endAnchorAngle": -0.7949216849910611,
+      "startAnchorAngle": 0.8176450458327023,
+      "endAnchorAngle": -2.3660951567803337,
       "labelOffset": {
-        "x": 23,
-        "y": 42
+        "x": 16,
+        "y": -10
       }
     },
     {
@@ -196,21 +143,150 @@
       "label": "Botón 1",
       "action": "M = 1",
       "controlOffset": {
-        "x": -8,
-        "y": 4
+        "x": -4,
+        "y": 2
       },
-      "startAnchorAngle": null,
-      "endAnchorAngle": 0.8453263185186561,
+      "startAnchorAngle": -0.42794849632148213,
+      "endAnchorAngle": 2.291069326857959,
       "labelOffset": {
         "x": 0,
         "y": 0
       }
+    },
+    {
+      "from": 1,
+      "to": 7,
+      "label": "Pulsador[M = 2]",
+      "action": "Medir",
+      "controlOffset": {
+        "x": 28,
+        "y": 18
+      },
+      "startAnchorAngle": 1.2649174553900444,
+      "endAnchorAngle": -2.9829373914033916,
+      "labelOffset": {
+        "x": -21,
+        "y": -28
+      }
+    },
+    {
+      "from": 1,
+      "to": 6,
+      "label": "Pulsador[M = 1]",
+      "action": "Medir",
+      "controlOffset": {
+        "x": 36,
+        "y": -24
+      },
+      "startAnchorAngle": -1.0133652352189562,
+      "endAnchorAngle": 3.141592653589793,
+      "labelOffset": {
+        "x": -21,
+        "y": -22
+      }
+    },
+    {
+      "from": 3,
+      "to": 7,
+      "label": "Pulsador",
+      "action": "",
+      "controlOffset": {
+        "x": -12,
+        "y": 76
+      },
+      "startAnchorAngle": 0.9006742893684003,
+      "endAnchorAngle": 2.7109001422032852,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 2,
+      "to": 6,
+      "label": "Pulsador",
+      "action": "",
+      "controlOffset": {
+        "x": -30,
+        "y": -68
+      },
+      "startAnchorAngle": -1.1003920638583053,
+      "endAnchorAngle": -2.52944015664471,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 6,
+      "to": 6,
+      "label": "100 ms",
+      "action": "Medir",
+      "controlOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "startAnchorAngle": -1.8192837474522994,
+      "endAnchorAngle": -0.23501221572065706,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 7,
+      "to": 7,
+      "label": "100 ms",
+      "action": "Medir",
+      "controlOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "startAnchorAngle": 1.5302779743165498,
+      "endAnchorAngle": -0.019605330857204686,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 6,
+      "to": 1,
+      "label": "Pulsador",
+      "action": "",
+      "controlOffset": {
+        "x": -30,
+        "y": 20
+      },
+      "startAnchorAngle": 2.169707588525128,
+      "endAnchorAngle": -0.3421558850831803,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 7,
+      "to": 1,
+      "label": "Pulsador",
+      "action": "",
+      "controlOffset": {
+        "x": -18,
+        "y": -14
+      },
+      "startAnchorAngle": -2.3476476897597336,
+      "endAnchorAngle": 0.43833655985795783,
+      "labelOffset": {
+        "x": 18,
+        "y": 10
+      }
     }
   ],
-  "stateIdCounter": 6,
+  "stateIdCounter": 9,
   "isDarkTheme": true,
   "simContext": {
     "P": 2,
-    "M": 2
+    "M": 2,
+    "if(M": 0
   }
 }
