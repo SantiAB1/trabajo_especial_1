@@ -60,8 +60,8 @@ all: main-build
 main-build: trabajoespecial1.elf secondary-outputs
 
 # Tool invocations
-trabajoespecial1.elf trabajoespecial1.map: $(OBJS) $(USER_OBJS) C:\Users\jerec\Documents\Ing\Sistemas\ Embebidos\Trabajo\ Especial\ 1\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "trabajoespecial1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\jerec\Documents\Ing\Sistemas Embebidos\Trabajo Especial 1\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="trabajoespecial1.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+trabajoespecial1.elf trabajoespecial1.map: $(OBJS) $(USER_OBJS) C:\Users\PC-Casa\Documents\trabajo_especial_1\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "trabajoespecial1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\PC-Casa\Documents\trabajo_especial_1\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="trabajoespecial1.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

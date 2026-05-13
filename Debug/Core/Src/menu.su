@@ -1,7 +1,0 @@
-../Core/Src/menu.c:13:6:menu_init	32	static
-../Core/Src/menu.c:27:6:menu_procesarEvento	32	static
-../Core/Src/menu.c:99:13:mostrar_menu	224	static
-../Core/Src/menu.c:107:13:medir_R	104	static
-../Core/Src/menu.c:124:13:setHighZ	24	static
-../Core/Src/menu.c:141:13:enableRange	32	static
-../Core/Src/menu.c:156:17:readADC	16	static
