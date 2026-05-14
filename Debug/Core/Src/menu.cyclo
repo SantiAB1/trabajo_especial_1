@@ -5,7 +5,7 @@
 ../Core/Src/menu.c:223:13:medir_C	2
 ../Core/Src/menu.c:243:13:setHighZ	1
 ../Core/Src/menu.c:260:13:enableRange	1
-../Core/Src/menu.c:275:10:AutoRango	3
-../Core/Src/menu.c:295:17:readADC	1
-../Core/Src/menu.c:302:17:Descarga	3
-../Core/Src/menu.c:320:17:Carga	4
+../Core/Src/menu.c:275:10:AutoRango	4
+../Core/Src/menu.c:303:17:readADC	1
+../Core/Src/menu.c:310:17:Descarga	3
+../Core/Src/menu.c:328:17:Carga	4

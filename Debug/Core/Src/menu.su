@@ -6,6 +6,6 @@
 ../Core/Src/menu.c:243:13:setHighZ	24	static
 ../Core/Src/menu.c:260:13:enableRange	32	static
 ../Core/Src/menu.c:275:10:AutoRango	16	static
-../Core/Src/menu.c:295:17:readADC	8	static
-../Core/Src/menu.c:302:17:Descarga	32	static
-../Core/Src/menu.c:320:17:Carga	40	static
+../Core/Src/menu.c:303:17:readADC	8	static
+../Core/Src/menu.c:310:17:Descarga	32	static
+../Core/Src/menu.c:328:17:Carga	40	static

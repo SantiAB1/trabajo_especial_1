@@ -275,15 +275,23 @@ static void enableRange(GPIO_TypeDef* port, uint16_t pin)	//Rango
 uint32_t AutoRango(uint32_t *valorADC){
 
 	setHighZ();
+	enableRange(GPIOR_PORT, GPIO330R);
+	*valorADC = readADC();
+	if(*valorADC<=3981){
+		return 330;
+	}
+
+
+	setHighZ();
 	enableRange(GPIOR_PORT, GPIO10K);
-	*valorADC = readADC(hadc);
-	if(*valorADC<=3200){
+	*valorADC = readADC();
+	if(*valorADC<=3981){
 		return 10000;
 	}
 
 	setHighZ();
 	enableRange(GPIOR_PORT, GPIO1M);
-	*valorADC = readADC(hadc);
+	*valorADC = readADC();
 	if(*valorADC<=3891){	//0.95*4095
 		return 1000000;
 	}
