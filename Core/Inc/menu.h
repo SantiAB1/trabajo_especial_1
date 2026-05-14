@@ -41,6 +41,6 @@ typedef struct{
 } medicion;
 
 
-void menu_init(medicion *medidor, uint32_t Pinicial, uint32_t Minicial, UART_HandleTypeDef * huart);
-void menu_procesarEvento(medicion *medidor, evento, UART_HandleTypeDef * huart, ADC_HandleTypeDef * hadc, TIM_HandleTypeDef * htim);
+void menu_init(medicion *medidor, uint32_t Pinicial, uint32_t Minicial, UART_HandleTypeDef * huart2, ADC_HandleTypeDef * hadc2, TIM_HandleTypeDef * htim2);
+void menu_procesarEvento(medicion *medidor, evento);
 #endif /* INC_MENU_H_ */

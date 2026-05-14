@@ -109,7 +109,7 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
-  menu_init(&medidor, 1, 1, &huart2);
+  menu_init(&medidor, 1, 1, &huart2, &hadc1, &htim2);
   HAL_UART_Receive_IT(&huart2, &rx_byte, 1);
   /* USER CODE END 2 */
 
@@ -126,24 +126,24 @@ int main(void)
 		  if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_11)){
 			  botonPresionado = 1;
 			  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-			  menu_procesarEvento(&medidor, PULSADOR, &huart2, &hadc1, &htim2);
+			  menu_procesarEvento(&medidor, PULSADOR);
 			  HAL_Delay(50);		//Delay anti-rebotes
 		  }
 	  }
 
 	  if(flagBOTON1){
 		  flagBOTON1 = 0;
-		  menu_procesarEvento(&medidor, BOTON_1, &huart2, &hadc1, &htim2);
+		  menu_procesarEvento(&medidor, BOTON_1);
 	  }
 
 	  if(flagBOTON2){
 		  flagBOTON2 = 0;
-		  menu_procesarEvento(&medidor, BOTON_2, &huart2, &hadc1, &htim2);
+		  menu_procesarEvento(&medidor, BOTON_2);
 	  }
 
 	  if(flagTIMER){
 		  flagTIMER = 0;
-		  menu_procesarEvento(&medidor, TIMER, &huart2, &hadc1, &htim2);
+		  menu_procesarEvento(&medidor, TIMER);
 	  }
 
     /* USER CODE END WHILE */
