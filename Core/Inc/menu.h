@@ -25,9 +25,12 @@ typedef enum{
 	RANGO_330,
 	RANGO_10K,
 	RANGO_1M,
+	DESCARGA,
+	CARGA,
 	MEDIR_R,
+	MEDIR_C,
 	OUT_OF_RANGE,
-	MEDIR_C
+	TIMEOUT
 } estado;
 
 typedef enum{
@@ -37,7 +40,10 @@ typedef enum{
 	PULSADOR,
 	TIMER,
 	EV_ON_RANGE,
-	EV_OUT_OF_RANGE
+	EV_OUT_OF_RANGE,
+	DESC_FIN,
+	CHARGE_FIN,
+	EV_TIMEOUT
 } evento;
 
 typedef struct{
