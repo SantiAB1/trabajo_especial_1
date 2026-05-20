@@ -22,15 +22,22 @@ typedef enum{
 	MENU_S,
 	PARAMETRO_S,
 	MODO_S,
+	RANGO_330,
+	RANGO_10K,
+	RANGO_1M,
 	MEDIR_R,
+	OUT_OF_RANGE,
 	MEDIR_C
 } estado;
 
 typedef enum{
+	EV_NULL,
 	BOTON_1,
 	BOTON_2,
 	PULSADOR,
-	TIMER
+	TIMER,
+	EV_ON_RANGE,
+	EV_OUT_OF_RANGE
 } evento;
 
 typedef struct{
