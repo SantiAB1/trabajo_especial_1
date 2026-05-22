@@ -101,8 +101,8 @@
     },
     {
       "id": 13,
-      "x": 1331,
-      "y": 407,
+      "x": 1393,
+      "y": 419,
       "label": "Carga",
       "action": "",
       "startAction": "",
@@ -112,8 +112,8 @@
     },
     {
       "id": 14,
-      "x": 1217,
-      "y": 593,
+      "x": 1220,
+      "y": 598,
       "label": "MEDIR_C",
       "action": "",
       "startAction": "",
@@ -234,7 +234,7 @@
       "from": 1,
       "to": 7,
       "label": "PULSADOR[M == 2]",
-      "action": "Medir",
+      "action": "t = 0",
       "controlOffset": {
         "x": 6,
         "y": 34
@@ -250,13 +250,13 @@
       "from": 1,
       "to": 6,
       "label": "PULSADOR[M == 1]",
-      "action": "Medir",
+      "action": "t = 0",
       "controlOffset": {
         "x": 36,
         "y": -24
       },
-      "startAnchorAngle": -1.0133652352189562,
-      "endAnchorAngle": 3.141592653589793,
+      "startAnchorAngle": -0.7403835476229214,
+      "endAnchorAngle": 2.7445132083648107,
       "labelOffset": {
         "x": -58,
         "y": -38
@@ -266,10 +266,10 @@
       "from": 3,
       "to": 7,
       "label": "PULSADOR[M == 2]",
-      "action": "",
+      "action": "t = 0",
       "controlOffset": {
         "x": -12,
-        "y": 76
+        "y": 74
       },
       "startAnchorAngle": 0.7739044166824178,
       "endAnchorAngle": 2.6320003887808676,
@@ -282,7 +282,7 @@
       "from": 2,
       "to": 6,
       "label": "PULSADOR[M == 1]",
-      "action": "",
+      "action": "t = 0",
       "controlOffset": {
         "x": -16,
         "y": -64
@@ -298,7 +298,7 @@
       "from": 3,
       "to": 6,
       "label": "PULSADOR[M == 1]",
-      "action": "Medir",
+      "action": "t = 0",
       "controlOffset": {
         "x": 630,
         "y": 492
@@ -314,64 +314,16 @@
       "from": 2,
       "to": 7,
       "label": "PULSADOR[M == 2]",
-      "action": "Medir",
+      "action": "t = 0",
       "controlOffset": {
-        "x": 604,
-        "y": -520
+        "x": 490,
+        "y": -596
       },
       "startAnchorAngle": -1.2643117619450344,
       "endAnchorAngle": -0.8740540452648857,
       "labelOffset": {
-        "x": 61,
-        "y": 35
-      }
-    },
-    {
-      "from": 6,
-      "to": 9,
-      "label": "OFF_RANGE",
-      "action": "",
-      "controlOffset": {
-        "x": 40,
-        "y": -12
-      },
-      "startAnchorAngle": -0.3302973548292537,
-      "endAnchorAngle": 3.0928508022798615,
-      "labelOffset": {
-        "x": 6,
-        "y": 4
-      }
-    },
-    {
-      "from": 9,
-      "to": 10,
-      "label": "OFF_RANGE",
-      "action": "",
-      "controlOffset": {
-        "x": 10,
-        "y": -46
-      },
-      "startAnchorAngle": -0.6837093116343712,
-      "endAnchorAngle": -2.393214606066275,
-      "labelOffset": {
-        "x": 0,
-        "y": -35
-      }
-    },
-    {
-      "from": 10,
-      "to": 11,
-      "label": "OFF_RANGE",
-      "action": "",
-      "controlOffset": {
-        "x": 0,
-        "y": 0
-      },
-      "startAnchorAngle": null,
-      "endAnchorAngle": null,
-      "labelOffset": {
-        "x": 0,
-        "y": 0
+        "x": -32,
+        "y": -41
       }
     },
     {
@@ -393,62 +345,14 @@
     {
       "from": 11,
       "to": 6,
-      "label": "TIMER",
-      "action": "",
+      "label": "TICK[t >= 1000 && M == 2]",
+      "action": "t = 0",
       "controlOffset": {
         "x": 42,
         "y": -14
       },
       "startAnchorAngle": -2.356194490192345,
       "endAnchorAngle": 0.2551823906208184,
-      "labelOffset": {
-        "x": 0,
-        "y": 0
-      }
-    },
-    {
-      "from": 6,
-      "to": 12,
-      "label": "ON_RANGE",
-      "action": "",
-      "controlOffset": {
-        "x": -6,
-        "y": -50
-      },
-      "startAnchorAngle": -1.439208185336976,
-      "endAnchorAngle": 2.905136511389876,
-      "labelOffset": {
-        "x": 32,
-        "y": -7
-      }
-    },
-    {
-      "from": 9,
-      "to": 12,
-      "label": "ON_RANGE",
-      "action": "",
-      "controlOffset": {
-        "x": 0,
-        "y": 0
-      },
-      "startAnchorAngle": null,
-      "endAnchorAngle": null,
-      "labelOffset": {
-        "x": 15,
-        "y": 0
-      }
-    },
-    {
-      "from": 10,
-      "to": 12,
-      "label": "ON_RANGE",
-      "action": "",
-      "controlOffset": {
-        "x": 28,
-        "y": -68
-      },
-      "startAnchorAngle": -1.6910918037228508,
-      "endAnchorAngle": -0.017389551289330653,
       "labelOffset": {
         "x": 0,
         "y": 0
@@ -471,25 +375,9 @@
       }
     },
     {
-      "from": 12,
-      "to": 6,
-      "label": "TIMER",
-      "action": "",
-      "controlOffset": {
-        "x": -84,
-        "y": -108
-      },
-      "startAnchorAngle": -3.0621144089815866,
-      "endAnchorAngle": -1.994663937324676,
-      "labelOffset": {
-        "x": 0,
-        "y": 0
-      }
-    },
-    {
       "from": 7,
       "to": 13,
-      "label": "DESC_FIN",
+      "label": "TICK[desc_fin]",
       "action": "",
       "controlOffset": {
         "x": 30,
@@ -505,8 +393,8 @@
     {
       "from": 13,
       "to": 11,
-      "label": "TIMEOUT",
-      "action": "",
+      "label": "TICK[u >= 1000]",
+      "action": "u = 0",
       "controlOffset": {
         "x": 0,
         "y": 0
@@ -521,10 +409,10 @@
     {
       "from": 13,
       "to": 14,
-      "label": "CHARGE_FIN",
-      "action": "",
+      "label": "TICK[charge_fin]",
+      "action": "u = 0",
       "controlOffset": {
-        "x": 0,
+        "x": 2,
         "y": 0
       },
       "startAnchorAngle": null,
@@ -537,8 +425,8 @@
     {
       "from": 14,
       "to": 7,
-      "label": "TIMER",
-      "action": "",
+      "label": "TICK[t >= 1000 && M == 2]",
+      "action": "t = 0",
       "controlOffset": {
         "x": 0,
         "y": 0
@@ -559,8 +447,8 @@
         "x": -90,
         "y": 278
       },
-      "startAnchorAngle": 2.6728945824799144,
-      "endAnchorAngle": 1.4254863161591944,
+      "startAnchorAngle": 2.311638012056135,
+      "endAnchorAngle": 1.240498971965643,
       "labelOffset": {
         "x": 0,
         "y": 0
@@ -569,8 +457,8 @@
     {
       "from": 11,
       "to": 7,
-      "label": "TIMER",
-      "action": "",
+      "label": "TICK[t >= 1000 && M = 2]",
+      "action": "t = 0",
       "controlOffset": {
         "x": 38,
         "y": 20
@@ -585,8 +473,8 @@
     {
       "from": 7,
       "to": 15,
-      "label": "TIMEOUT",
-      "action": "",
+      "label": "TICK[t >= 5000]",
+      "action": "t = 0",
       "controlOffset": {
         "x": 64,
         "y": -30
@@ -613,12 +501,241 @@
         "x": 0,
         "y": 0
       }
+    },
+    {
+      "from": 6,
+      "to": 9,
+      "label": "TICK[!on_range]",
+      "action": "",
+      "controlOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "startAnchorAngle": null,
+      "endAnchorAngle": null,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 6,
+      "to": 12,
+      "label": "TICK[on_range]",
+      "action": "",
+      "controlOffset": {
+        "x": 52,
+        "y": 4
+      },
+      "startAnchorAngle": -0.5803981873938742,
+      "endAnchorAngle": 2.2011977482684038,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 12,
+      "to": 6,
+      "label": "TICK[t >= 1000 && M == 2]",
+      "action": "t = 0",
+      "controlOffset": {
+        "x": -22,
+        "y": -48
+      },
+      "startAnchorAngle": 2.646040980103965,
+      "endAnchorAngle": -1.3318598862087332,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 12,
+      "to": 12,
+      "label": "TICK[t < 1000]",
+      "action": "t = t+1",
+      "controlOffset": {
+        "x": 15,
+        "y": 9
+      },
+      "startAnchorAngle": null,
+      "endAnchorAngle": -0.4985679056382179,
+      "labelOffset": {
+        "x": -1,
+        "y": 0
+      }
+    },
+    {
+      "from": 9,
+      "to": 12,
+      "label": "TICK[on_range]",
+      "action": "",
+      "controlOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "startAnchorAngle": null,
+      "endAnchorAngle": null,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 9,
+      "to": 10,
+      "label": "TICK[!on_range]",
+      "action": "",
+      "controlOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "startAnchorAngle": null,
+      "endAnchorAngle": null,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 10,
+      "to": 12,
+      "label": "TICK[on_range]",
+      "action": "",
+      "controlOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "startAnchorAngle": null,
+      "endAnchorAngle": null,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 10,
+      "to": 11,
+      "label": "TICK[!on_range]",
+      "action": "",
+      "controlOffset": {
+        "x": 2,
+        "y": 4
+      },
+      "startAnchorAngle": null,
+      "endAnchorAngle": null,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 11,
+      "to": 11,
+      "label": "TICK[t < 1000]",
+      "action": "t = t+1",
+      "controlOffset": {
+        "x": -46.5,
+        "y": -7.5
+      },
+      "startAnchorAngle": -0.2914567944778671,
+      "endAnchorAngle": 0.711459125739508,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 7,
+      "to": 1,
+      "label": "PULSADOR",
+      "action": "",
+      "controlOffset": {
+        "x": 10,
+        "y": -16
+      },
+      "startAnchorAngle": -2.479377152333621,
+      "endAnchorAngle": 0.5774396161445141,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 13,
+      "to": 1,
+      "label": "PULSADOR",
+      "action": "u = 0",
+      "controlOffset": {
+        "x": -84,
+        "y": 832
+      },
+      "startAnchorAngle": 1.073453610448074,
+      "endAnchorAngle": 1.5581387749608446,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 7,
+      "to": 7,
+      "label": "TICK[t < 5000 && !desc_fin]",
+      "action": "t = t+1",
+      "controlOffset": {
+        "x": 0,
+        "y": 37.5
+      },
+      "startAnchorAngle": -2.173083672929861,
+      "endAnchorAngle": null,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 13,
+      "to": 13,
+      "label": "TICK[u < 1000]",
+      "action": "t = t+1\nu = u + 1",
+      "controlOffset": {
+        "x": -1.5,
+        "y": -3
+      },
+      "startAnchorAngle": -1.1193432352423422,
+      "endAnchorAngle": 0.25786454780099666,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "from": 14,
+      "to": 14,
+      "label": "TICK[t < 1000]",
+      "action": "",
+      "controlOffset": {
+        "x": 58.5,
+        "y": -4.5
+      },
+      "startAnchorAngle": 2.7514557556026475,
+      "endAnchorAngle": -2.812799962084839,
+      "labelOffset": {
+        "x": 0,
+        "y": 0
+      }
     }
   ],
   "stateIdCounter": 16,
   "isDarkTheme": true,
   "simContext": {
     "P": 1,
-    "M": 1
+    "M": 1,
+    "on_range": 1,
+    "t": 0,
+    "desc_fin": 0,
+    "charge_fin": 0,
+    "u": 0
   }
 }
