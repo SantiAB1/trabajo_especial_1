@@ -38,12 +38,7 @@ typedef enum{
 	BOTON_1,
 	BOTON_2,
 	PULSADOR,
-	TIMER,
-	EV_ON_RANGE,
-	EV_OUT_OF_RANGE,
-	DESC_FIN,
-	CHARGE_FIN,
-	EV_TIMEOUT
+	TICK
 } evento;
 
 typedef struct{

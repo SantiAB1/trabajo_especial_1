@@ -4,16 +4,24 @@ char confParametro[15];
 char confModo[15];
 //--------------------------------FUNCIONES---------------------------------
 static void medir_R(medicion *medidor);
-static void mostrar_menu();					//Printear el menu en la terminal
+static void mostrar_menu(UART_HandleTypeDef *huart);					//Printear el menu en la terminal
 static void setHighZ();	//Poner todas los pines de salida para medición en alta impedancia.
 static void enableRange(GPIO_TypeDef *port, uint16_t pin);//Elrjir el rango de resistencia
+static void Descarga();
+static void Carga();
 static uint16_t readADC();							//Tomar muestra del ADC
-static uint32_t Descarga();
-static uint32_t Carga();
 
+//variables globales
 static uint32_t rango;
 static uint32_t valorADC;
-
+//contadores
+static uint32_t t;
+static uint32_t u;
+//flags
+static uint32_t on_range;
+static uint32_t desc_fin;
+static uint32_t charge_fin;
+//periféricos
 static UART_HandleTypeDef *huart;
 static ADC_HandleTypeDef *hadc;
 static TIM_HandleTypeDef *htim;
@@ -42,20 +50,16 @@ void menu_init(medicion *medidor, uint32_t Pinicial, uint32_t Minicial,
 
 void menu_procesarEvento(medicion *medidor, evento event) {
 
-	while(event){
-
 	switch (medidor->estado) {
 
 	case MENU_S:// Estando en el menu apretar: 1 para Parametro, 2 para tipo de medicion
 		switch (event) {
 		case BOTON_1:
-
 			medidor->estado = PARAMETRO_S;
 			char *msgParametro =
 					"Opcion 1: medir RESISTENCIA\nOpcion 2: medir CAPACITANCIA\r\n\n";
 			HAL_UART_Transmit(huart, (uint8_t*) msgParametro,
 					strlen(msgParametro), HAL_MAX_DELAY);
-			event = EV_NULL;
 			break;
 
 		case BOTON_2:
@@ -65,37 +69,31 @@ void menu_procesarEvento(medicion *medidor, evento event) {
 					"Opcion 1: medicion unica\nOpcion 2: medicion periodica (100 ms)\r\n\n";
 			HAL_UART_Transmit(huart, (uint8_t*) msgModo, strlen(msgModo),
 			HAL_MAX_DELAY);
-			event = EV_NULL;
 			break;
 
 		case PULSADOR:   // Y pulsador para empezar a medir
-			if (medidor->M == 2) {
-				HAL_TIM_Base_Start_IT(htim);
-			}
 			if (medidor->P == 1) {
 				//Cambio a estado MEDIR330
 				medidor->estado = RANGO_330;
+				t = 0;
 				//Primera rutina de autorango:
 				setHighZ();
 				enableRange(GPIOR_PORT, GPIO330R);
 				valorADC = readADC();
-				if (valorADC <= 3981) {			//95% de valor máximo del ADC
-					event = EV_ON_RANGE;
+				if (valorADC <= 3900) {			//95% de valor máximo del ADC
+					on_range = 1;
 				} else {
-					event = EV_OUT_OF_RANGE;
+					on_range = 0;
 				}
 			} else {
 				medidor->estado = DESCARGA;
-				// Realizar la descarga y comprobar la flag
-				if(Descarga()){
-					event = DESC_FIN;
-				} else{
-					event = EV_TIMEOUT;
-				}
+				t = 0;				// Realizar la descarga y comprobar la flag
+				desc_fin = 0;
+				Descarga();
 			}
 			break;
 
-		default: event = EV_NULL; break;
+		default: break;
 		}
 		break;
 
@@ -107,7 +105,6 @@ void menu_procesarEvento(medicion *medidor, evento event) {
 			medidor->P = 1;
 			sprintf(confParametro, "RESISTENCIA");
 			mostrar_menu(huart);
-			event = EV_NULL;
 			break;
 
 		case BOTON_2:
@@ -115,37 +112,31 @@ void menu_procesarEvento(medicion *medidor, evento event) {
 			medidor->P = 2;
 			sprintf(confParametro, "CAPACITANCIA");
 			mostrar_menu(huart);
-			event = EV_NULL;
 			break;
 
 		case PULSADOR:	// Pulsador para empezar a medir
-			if (medidor->M == 2) {
-				HAL_TIM_Base_Start_IT(htim);
-			}
 			if (medidor->P == 1) {
 				//Cambio a estado MEDIR330
 				medidor->estado = RANGO_330;
+				t = 0;
 				//Primera rutina de autorango:
 				setHighZ();
 				enableRange(GPIOR_PORT, GPIO330R);
 				valorADC = readADC();
-				if (valorADC <= 3981) {			//95% de valor máximo del ADC
-					event = EV_ON_RANGE;
+				if (valorADC <= 3900) {			//95% de valor máximo del ADC
+					on_range = 1;
 				} else {
-					event = EV_OUT_OF_RANGE;
+					on_range = 0;
 				}
 			} else {
 				medidor->estado = DESCARGA;
-				// Realizar la descarga y comprobar la flag
-				if(Descarga()){
-					event = DESC_FIN;
-				} else{
-					event = EV_TIMEOUT;
-				}
+				t = 0;
+				desc_fin = 0;
+				Descarga();
 			}
 			break;
 
-		default: event = EV_NULL; break;
+		default: break;
 		}
 
 		break;
@@ -157,7 +148,6 @@ void menu_procesarEvento(medicion *medidor, evento event) {
 			medidor->M = 1;
 			sprintf(confModo, "UNICA");
 			mostrar_menu(huart);
-			event = EV_NULL;
 			break;
 
 		case BOTON_2:
@@ -165,184 +155,194 @@ void menu_procesarEvento(medicion *medidor, evento event) {
 			medidor->M = 2;
 			sprintf(confModo, "PERIODICA");
 			mostrar_menu(huart);
-			event = EV_NULL;
 			break;
 
 		case PULSADOR:
-			if (medidor->M == 2) {
-				HAL_TIM_Base_Start_IT(htim);
-			}
 			if (medidor->P == 1) {
 				//Cambio a estado MEDIR330
 				medidor->estado = RANGO_330;
+				t = 0;
 				//Primera rutina de autorango:
 				setHighZ();
 				enableRange(GPIOR_PORT, GPIO330R);
 				valorADC = readADC();
-				if (valorADC <= 3981) {			//95% de valor máximo del ADC
-					event = EV_ON_RANGE;
+				if (valorADC <= 3900) {			//95% de valor máximo del ADC
+					on_range = 1;
 				} else {
-					event = EV_OUT_OF_RANGE;
+					on_range = 0;
 				}
 			} else {
 				medidor->estado = DESCARGA;
-				// Realizar la descarga y comprobar la flag
-				if(Descarga()){
-					event = DESC_FIN;
-				} else{
-					event = EV_TIMEOUT;
-				}
+				t = 0;
+				desc_fin = 0;
+				Descarga();
 			}
 			break;
 
-		default: event = EV_NULL; break;
+		default: break;
 		}
 		break;
 
 	case RANGO_330:
 		switch (event) {
-		case EV_OUT_OF_RANGE:
-			medidor->estado = RANGO_10K;
-			setHighZ();
-			enableRange(GPIOR_PORT, GPIO10K);
-			valorADC = readADC();
-			if (valorADC <= 3981) {			//95% de valor máximo del ADC
-				event = EV_ON_RANGE;
-			} else {
-				event = EV_OUT_OF_RANGE;
+		case TICK:
+			if(on_range){
+				medidor->estado = MEDIR_R;
+				rango = 330;
+				medir_R(medidor);
+			} else{
+				medidor->estado = RANGO_10K;
+				setHighZ();
+				enableRange(GPIOR_PORT, GPIO10K);
+				valorADC = readADC();
+				if (valorADC <= 3900) {			//95% de valor máximo del ADC
+					on_range = 1;
+				} else {
+					on_range = 0;
+				}
 			}
 			break;
-		case EV_ON_RANGE:
-			medidor->estado = MEDIR_R;
-			rango = 330;
-			medir_R(medidor);
-			event = EV_NULL;
-			break;
-		default: event = EV_NULL; break;
+		default: break;
 		}
 		break;
 
 	case RANGO_10K:
 		switch (event) {
-		case EV_OUT_OF_RANGE:
-			medidor->estado = RANGO_1M;
-			setHighZ();
-			enableRange(GPIOR_PORT, GPIO1M);
-			valorADC = readADC();
-			if (valorADC <= 3981) {			//95% de valor máximo del ADC
-				event = EV_ON_RANGE;
-			} else {
-				event = EV_OUT_OF_RANGE;
+		case TICK:
+			if(on_range){
+				medidor->estado = MEDIR_R;
+				rango = 10000;
+				medir_R(medidor);
+			} else{
+				medidor->estado = RANGO_1M;
+				setHighZ();
+				enableRange(GPIOR_PORT, GPIO1M);
+				valorADC = readADC();
+				if (valorADC <= 3900) {			//95% de valor máximo del ADC
+					on_range = 1;
+				} else {
+					on_range = 0;
+				}
 			}
 			break;
-		case EV_ON_RANGE:
-			medidor->estado = MEDIR_R;
-			rango = 10000;
-			medir_R(medidor);
-			event = EV_NULL;
-			break;
-		default: event = EV_NULL; break;
+		default: break;
 		}
 		break;
 
 	case RANGO_1M:
 		switch (event) {
-		case EV_OUT_OF_RANGE:
-			medidor->estado = OUT_OF_RANGE;
-			char *msgEscala = "FUERA DE ESCALA\r\n\n";
-			HAL_UART_Transmit(huart, (uint8_t*) msgEscala, strlen(msgEscala), HAL_MAX_DELAY);
-			setHighZ();
-			event = EV_NULL;
+		case TICK:
+			if(on_range){
+				medidor->estado = MEDIR_R;
+				rango = 1000000;
+				medir_R(medidor);
+			} else{
+				medidor->estado = OUT_OF_RANGE;
+				char *msgError = "FUERA DE ESCALA\r\n\n";
+				HAL_UART_Transmit(huart, (uint8_t*) msgError, strlen(msgError),	HAL_MAX_DELAY);
+				setHighZ();
+			}
 			break;
-		case EV_ON_RANGE:
-			medidor->estado = MEDIR_R;
-			rango = 1000000;
-			medir_R(medidor);
-			event = EV_NULL;
-			break;
-		default: event = EV_NULL; break;
+		default: break;
 		}
 		break;
 
 	case OUT_OF_RANGE:
 		switch(event){
-		case TIMER:
-			if(medidor->P == 1){
-				//Cambio a estado MEDIR330
-				medidor->estado = RANGO_330;
-				//Primera rutina de autorango:
-				setHighZ();
-				enableRange(GPIOR_PORT, GPIO330R);
-				valorADC = readADC();
-				if (valorADC <= 3981) {			//95% de valor máximo del ADC
-					event = EV_ON_RANGE;
-				} else {
-					event = EV_OUT_OF_RANGE;
-				}
-			} else{
-				medidor->estado = DESCARGA;
-				// Realizar la descarga y comprobar la flag
-				if(Descarga()){
-					event = DESC_FIN;
+		case TICK:
+			if(t < 1000){
+				t++;
+			} else if(medidor->M == 2){
+				t = 0;
+				if(medidor->P == 1){
+					//Cambio a estado MEDIR330
+					medidor->estado = RANGO_330;
+					//Primera rutina de autorango:
+					setHighZ();
+					enableRange(GPIOR_PORT, GPIO330R);
+					valorADC = readADC();
+					if (valorADC <= 3900) {			//95% de valor máximo del ADC
+						on_range = 1;
+					} else {
+						on_range = 0;
+					}
 				} else{
-					event = EV_TIMEOUT;
+					medidor->estado = DESCARGA;
+					Descarga();
+					desc_fin = 0;
 				}
 			}
 			break;
 		case PULSADOR:
 			medidor->estado = MENU_S;
-			if (medidor->M == 2) {
-				HAL_TIM_Base_Stop_IT(htim);
-			}
 			setHighZ();
 			mostrar_menu(huart);
-			event = EV_NULL;
 			break;
-		default: event = EV_NULL; break;
+		default: break;
 		}
 		break;
 
 	case DESCARGA:
 		switch(event){
-		case DESC_FIN:
-			medidor->estado = CARGA;
-			medidor->valor = Carga(medidor);
-			if (medidor->valor == 0) {
-				char *msgError = "FUERA DE ESCALA\r\n\n";
-				HAL_UART_Transmit(huart, (uint8_t*) msgError, strlen(msgError),	HAL_MAX_DELAY);
-				setHighZ();
-				event = EV_TIMEOUT;
+		case TICK:
+			if (readADC() <= 82)
+				desc_fin = 1;
+
+			if(desc_fin){
+				medidor->estado = CARGA;
+				u = 0;
+				charge_fin = 0;
+				Carga();
+			} else if (t < 5000){
+				t++;
 			} else{
-				char tx_buffer[64];
-				sprintf(tx_buffer, "Valor medido: %f nF\n\n", medidor->valor);
-				HAL_UART_Transmit(huart, (uint8_t*) tx_buffer, strlen(tx_buffer), HAL_MAX_DELAY);
-				event = CHARGE_FIN;
+				medidor->estado = TIMEOUT;
+				setHighZ();
+				char *msgError = "ERROR: Timeout en la descarga. Presiona el PULSADOR para continuar.\r\n\n";
+				HAL_UART_Transmit(huart, (uint8_t *) msgError, strlen(msgError), HAL_MAX_DELAY);
 			}
 			break;
-		case EV_TIMEOUT:
-			medidor->estado = TIMEOUT;
-			if(medidor->M == 2)
-				HAL_TIM_Base_Stop_IT(htim);
+
+		case PULSADOR:
+			medidor->estado = MENU_S;
+			char *msgCancel = "Medida cancelada.\r\n\n";
 			setHighZ();
-			char *msgError = "ERROR: Timeout en la descarga. Presiona el PULSADOR para continuar.\r\n\n";
-			HAL_UART_Transmit(huart, (uint8_t *) msgError, strlen(msgError), HAL_MAX_DELAY);
-			event = EV_NULL;
+			HAL_UART_Transmit(huart, (uint8_t *) msgCancel, strlen(msgCancel), HAL_MAX_DELAY);
+			mostrar_menu(huart);
 			break;
-		default: event = EV_NULL; break;
+
+		default: break;
 		}
 		break;
 
 	case CARGA:
 		switch(event){
-		case CHARGE_FIN:
-			medidor->estado = MEDIR_C;
-			event = EV_NULL;
+		case TICK:
+			if (readADC(hadc) >= 2580) {  	//0.63*4095
+				medidor->estado = MEDIR_C;
+				medidor->valor = u;
+				char tx_buffer[64];
+				sprintf(tx_buffer, "Valor medido: %lu nF\n\n", u);
+				HAL_UART_Transmit(huart, (uint8_t*) tx_buffer, strlen(tx_buffer), HAL_MAX_DELAY);
+			} else if (u < 1000){
+				t++;
+				u++;
+			} else{
+				medidor->estado = OUT_OF_RANGE;
+				char *msgError = "FUERA DE ESCALA\r\n\n";
+				HAL_UART_Transmit(huart, (uint8_t*) msgError, strlen(msgError),	HAL_MAX_DELAY);
+				setHighZ();
+			}
 			break;
-		case EV_TIMEOUT:
-			medidor->estado = OUT_OF_RANGE;
-			event = EV_NULL;
+
+		case PULSADOR:
+			medidor->estado = MENU_S;
+			char *msgCancel = "Medida cancelada.\r\n\n";
+			setHighZ();
+			HAL_UART_Transmit(huart, (uint8_t *) msgCancel, strlen(msgCancel), HAL_MAX_DELAY);
+			mostrar_menu(huart);
 			break;
-		default: event = EV_NULL; break;
+		default: break;
 		}
 		break;
 
@@ -351,62 +351,54 @@ void menu_procesarEvento(medicion *medidor, evento event) {
 			medidor->estado = MENU_S;
 			mostrar_menu(huart);
 		}
-		event = EV_NULL;
 		break;
 
 	case MEDIR_R:
 		switch (event) {
-		case TIMER:
-			medir_R(medidor);
-			//Cambio a estado MEDIR330
-			medidor->estado = RANGO_330;
-			//Primera rutina de autorango:
-			setHighZ();
-			enableRange(GPIOR_PORT, GPIO330R);
-			valorADC = readADC();
-			if (valorADC <= 3981) {			//95% de valor máximo del ADC
-				event = EV_ON_RANGE;
-			} else {
-				event = EV_OUT_OF_RANGE;
+		case TICK:
+			if(t < 1000){
+				t++;
+			} else if(medidor->M == 2){
+				medidor->estado = RANGO_330;
+				t = 0;
+				//Primera rutina de autorango:
+				setHighZ();
+				enableRange(GPIOR_PORT, GPIO330R);
+				valorADC = readADC();
+				if (valorADC <= 3900) {			//95% de valor máximo del ADC
+					on_range = 1;
+				} else {
+					on_range = 0;
+				}
 			}
 			break;
 		case PULSADOR:
 			medidor->estado = MENU_S;
-			if (medidor->M == 2) {
-				HAL_TIM_Base_Stop_IT(htim);
-			}
 			mostrar_menu(huart);
-			setHighZ();
-			event = EV_NULL;
 			break;
-		default: event = EV_NULL; break;
+		default: break;
 		}
 		break;
 
 	case MEDIR_C:
 		switch (event){
-		case TIMER:
-			medidor->estado = DESCARGA;
-			// Realizar la descarga y comprobar la flag
-			if(Descarga()){
-				event = DESC_FIN;
-			} else{
-				event = EV_TIMEOUT;
+		case TICK:
+			if(t < 1000){
+				t++;
+			} else if(medidor->M == 2){
+				medidor->estado = DESCARGA;
+				t = 0;				// Realizar la descarga y comprobar la flag
+				desc_fin = 0;
+				Descarga();
 			}
 			break;
 		case PULSADOR:
 			medidor->estado = MENU_S;
-			if (medidor->M == 2) {
-				HAL_TIM_Base_Stop_IT(htim);
-			}
-			setHighZ();
 			mostrar_menu(huart);
-			event = EV_NULL;
 			break;
-		default: event = EV_NULL; break;
+		default: break;
 		}
 		break;
-	}
 	}
 }
 
@@ -424,9 +416,6 @@ static void mostrar_menu(UART_HandleTypeDef *huart) {
 }
 
 static void medir_R(medicion *medidor) {
-	char *msgMEDIR = "Midiendo...\r\n";
-	HAL_UART_Transmit(huart, (uint8_t*) msgMEDIR, strlen(msgMEDIR),
-	HAL_MAX_DELAY);
 
 	uint32_t acumulador = 0;
 
@@ -439,7 +428,7 @@ static void medir_R(medicion *medidor) {
 	medidor->valor /= 32;				//Promediar las 32 lecturas
 
 	//Pasar la medida a valores en ohms:
-	medidor->valor *= 3.3 / 4096;
+	medidor->valor *= 3.3 / 4020;
 	medidor->valor = (medidor->valor * rango) / (3.3 - medidor->valor);
 	//devolver el valor medido
 	char tx_buffer[64];
@@ -485,7 +474,7 @@ static uint16_t readADC() { // medir con el adc
 	return HAL_ADC_GetValue(hadc);
 }
 
-static uint32_t Descarga() { //Configura el pin que se va a usar para DESCARGAR el cap
+static void Descarga() { //Configura el pin que se va a usar para DESCARGAR el cap
 	GPIO_InitTypeDef GPIO_InitStruct;
 	setHighZ();
 	GPIO_InitStruct.Pin = GPIO330R;
@@ -493,17 +482,9 @@ static uint32_t Descarga() { //Configura el pin que se va a usar para DESCARGAR 
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOR_PORT, &GPIO_InitStruct);
 	HAL_GPIO_WritePin(GPIOR_PORT, GPIO330R, GPIO_PIN_RESET);
-	uint32_t inicio = HAL_GetTick();
-	uint32_t TIMEOUT = 5000;
-	while ((HAL_GetTick() - inicio) < TIMEOUT) {
-		if (readADC(hadc) <= 82) {
-			return 1;
-		}
-	}
-	return 0;	// error hizo timeout
 }
 
-static uint32_t Carga() {//Configura el pin que se va a usar para CARGAR el cap
+static void Carga() {//Configura el pin que se va a usar para CARGAR el cap
 	GPIO_InitTypeDef GPIO_InitStruct;
 	setHighZ();
 	GPIO_InitStruct.Pin = GPIO1M;
@@ -511,18 +492,5 @@ static uint32_t Carga() {//Configura el pin que se va a usar para CARGAR el cap
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOR_PORT, &GPIO_InitStruct);
 	HAL_GPIO_WritePin(GPIOR_PORT, GPIO1M, GPIO_PIN_RESET);
-	uint32_t TIMEOUT = 5000;
-	uint32_t contador = 0;
 	HAL_GPIO_WritePin(GPIOR_PORT, GPIO1M, GPIO_PIN_SET);
-	uint32_t inicio = HAL_GetTick();
-	while ((HAL_GetTick() - inicio) < TIMEOUT) {
-		if (readADC(hadc) >= 2580) {  	//0.63*4095
-			return HAL_GetTick() - inicio;
-		}
-		contador++;
-		if (contador > 72000000) {
-			return 0;				// Exceso de cuentas
-		}
-	}
-	return 0; //ERROR timeout
 }

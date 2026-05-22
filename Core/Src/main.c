@@ -111,6 +111,7 @@ int main(void)
 
   menu_init(&medidor, 1, 1, &huart2, &hadc1, &htim2);
   HAL_UART_Receive_IT(&huart2, &rx_byte, 1);
+  HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -143,7 +144,7 @@ int main(void)
 
 	  if(flagTIMER){
 		  flagTIMER = 0;
-		  menu_procesarEvento(&medidor, TIMER);
+		  menu_procesarEvento(&medidor, TICK);
 	  }
 
     /* USER CODE END WHILE */
@@ -265,7 +266,7 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 7200;
+  htim2.Init.Prescaler = 71;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 1000;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -389,7 +390,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	//Volver a activar interrupciones por UART
 	HAL_UART_Receive_IT(&huart2, &rx_byte, 1);
 }
-
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	flagTIMER = 1;
 }
