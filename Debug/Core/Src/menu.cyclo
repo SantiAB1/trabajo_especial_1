@@ -1,9 +1,9 @@
 ../Core/Src/menu.c:30:6:menu_init	1
 ../Core/Src/menu.c:51:6:menu_procesarEvento	64
 ../Core/Src/menu.c:405:13:mostrar_menu	1
-../Core/Src/menu.c:418:13:medir_R	2
-../Core/Src/menu.c:439:13:setHighZ	1
-../Core/Src/menu.c:456:13:enableRange	1
-../Core/Src/menu.c:471:17:readADC	1
-../Core/Src/menu.c:477:13:Descarga	1
-../Core/Src/menu.c:487:13:Carga	1
+../Core/Src/menu.c:418:13:medir_R	4
+../Core/Src/menu.c:452:13:setHighZ	1
+../Core/Src/menu.c:469:13:enableRange	1
+../Core/Src/menu.c:484:17:readADC	1
+../Core/Src/menu.c:490:13:Descarga	1
+../Core/Src/menu.c:504:13:Carga	1

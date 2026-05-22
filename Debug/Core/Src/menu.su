@@ -1,9 +1,9 @@
 ../Core/Src/menu.c:30:6:menu_init	40	static
 ../Core/Src/menu.c:51:6:menu_procesarEvento	120	static
 ../Core/Src/menu.c:405:13:mostrar_menu	224	static
-../Core/Src/menu.c:418:13:medir_R	96	static
-../Core/Src/menu.c:439:13:setHighZ	24	static
-../Core/Src/menu.c:456:13:enableRange	32	static
-../Core/Src/menu.c:471:17:readADC	8	static
-../Core/Src/menu.c:477:13:Descarga	24	static
-../Core/Src/menu.c:487:13:Carga	24	static
+../Core/Src/menu.c:418:13:medir_R	104	static
+../Core/Src/menu.c:452:13:setHighZ	24	static
+../Core/Src/menu.c:469:13:enableRange	32	static
+../Core/Src/menu.c:484:17:readADC	8	static
+../Core/Src/menu.c:490:13:Descarga	40	static
+../Core/Src/menu.c:504:13:Carga	40	static

@@ -417,6 +417,9 @@ static void mostrar_menu(UART_HandleTypeDef *huart) {
 
 static void medir_R(medicion *medidor) {
 
+	char *msgMidiendo = "Midiendo...\r\n";
+	HAL_UART_Transmit(huart, (uint8_t*) msgMidiendo, strlen(msgMidiendo), HAL_MAX_DELAY);
+
 	uint32_t acumulador = 0;
 
 	for (uint32_t i = 0; i < 32; i++) {
@@ -430,10 +433,20 @@ static void medir_R(medicion *medidor) {
 	//Pasar la medida a valores en ohms:
 	medidor->valor *= 3.3 / 4020;
 	medidor->valor = (medidor->valor * rango) / (3.3 - medidor->valor);
-	//devolver el valor medido
+	//unidad
 	char tx_buffer[64];
+	if(medidor->valor < 1000){
 	sprintf(tx_buffer, "Valor medido: %.2f Ohms\n\n", medidor->valor);
 	HAL_UART_Transmit(huart, (uint8_t*) tx_buffer, strlen(tx_buffer), HAL_MAX_DELAY);
+	} else if(medidor->valor < 1000000){
+		medidor->valor/=1000;
+		sprintf(tx_buffer, "Valor medido: %.2f KOhms\n\n", medidor->valor);
+		HAL_UART_Transmit(huart, (uint8_t*) tx_buffer, strlen(tx_buffer), HAL_MAX_DELAY);
+	} else{
+		medidor->valor /= 1000000;
+		sprintf(tx_buffer, "Valor medido: %.2f MOhms\n\n", medidor->valor);
+		HAL_UART_Transmit(huart, (uint8_t*) tx_buffer, strlen(tx_buffer), HAL_MAX_DELAY);
+	}
 }
 
 static void setHighZ() {//Configurar los GPIO en alta impedancia, con el auto-rango se elige que pin poner como salida en alto
@@ -475,6 +488,10 @@ static uint16_t readADC() { // medir con el adc
 }
 
 static void Descarga() { //Configura el pin que se va a usar para DESCARGAR el cap
+
+	char *msgDesc = "Descargando capacitor...\r\n";
+	HAL_UART_Transmit(huart, (uint8_t*) msgDesc, strlen(msgDesc), HAL_MAX_DELAY);
+
 	GPIO_InitTypeDef GPIO_InitStruct;
 	setHighZ();
 	GPIO_InitStruct.Pin = GPIO330R;
@@ -485,6 +502,9 @@ static void Descarga() { //Configura el pin que se va a usar para DESCARGAR el c
 }
 
 static void Carga() {//Configura el pin que se va a usar para CARGAR el cap
+	char *msgMidiendo = "Midiendo...\r\n";
+	HAL_UART_Transmit(huart, (uint8_t*) msgMidiendo, strlen(msgMidiendo), HAL_MAX_DELAY);
+
 	GPIO_InitTypeDef GPIO_InitStruct;
 	setHighZ();
 	GPIO_InitStruct.Pin = GPIO1M;
